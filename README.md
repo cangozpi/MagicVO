@@ -5,9 +5,26 @@ Implementation of MagicVO: End-to-End Monocular Visual Odometry through Deep Bi-
 
 ## __TODOs:__
 1. DataLoaders. :heavy_check_mark:
-2. Pytorch implementation of the model
-3. Training, Evaluation loops with ckpt saving and logging
-4. GPU training,
-5. utility functions for the visualization of the results.
-6. Carla Environment. 
+2. Pre-trained FlowNet model
+3. MagicVO Implementation
+4. Training/Validation Loop
+5. Saving/Loading trained models
+6. configurations yaml file and command line arguments parsing
+7. Utility functions for the visualization of the results.
+8. GPU training, 
 
+---
+
+## Installation (FlowNet2)
+```bash
+# install custom layers
+$ cd FlowNet2_src
+$ bash install.sh
+```
+* FlowNet2 Model adapted from https://github.com/vt-vl-lab/flownet2.pytorch
+
+---
+
+* DataLoader adapted from https://github.com/EduardoTayupanta/VisualOdometry
+
+---

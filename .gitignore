@@ -1,1 +1,3 @@
 dataset/
+models/checkpoints
+__pycache__/
