@@ -20,12 +20,19 @@ class MagicVO_Model(nn.Module):
 
     def forward(self, x):
         # Flatten the input:
-        out = x.view(-1, self.input_size) # --> [B, L, 10*3*1024]
+        out = x.view(-1, self.input_size) # --> [L, 10*3*1024]
         # Pass through Recurrent Layers:
         batch_size = x.size(0)
         h0 = torch.zeros(self.num_layers*2, batch_size, self.hidden_size).to(self.device)
         c0 = torch.zeros(self.num_layers*2, batch_size, self.hidden_size).to(self.device)
-        out = self.bi_lstm_model(out, (h0, c0)) # --> [B, L, hidden_size]
+        out = self.bi_lstm_model(out, (h0, c0)) # --> [L, hidden_size]
         # Pass through Dense Layers:
-        out = self.fc(out) # --> [B, L, 6]
+        out = self.fc(out) # --> [L, 6]
         return out
+
+    def loss(self, x, targets, k):
+        preds = self.forward(x) # --> [L, 6] 6 DoF predictions
+        mse_position_loss = torch.nn.functional.mse_loss(preds[:, :3], targets[:, :3])
+        mse_orientation_loss = torch.nn.functional.mse_loss(preds[:, 3:], targets[:, 3:])
+        combined_loss = mse_position_loss + (k * mse_orientation_loss)
+        return combined_loss
