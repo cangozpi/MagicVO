@@ -4,4 +4,7 @@ dataset/*
 models/checkpoints/*
 !models/checkpoints/.gitkeep
 
+results/*
+!results/.gitkeep
+
 __pycache__/

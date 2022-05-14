@@ -1,20 +1,20 @@
 import torch
 import matplotlib.pyplot as plt
-import numpy as np
 
 def plot_results(train_losses, val_losses):
     plt.figure()
-    plt.plot(np.arange(len(train_losses)), train_losses)
+    plt.plot(list(range(1, len(train_losses)+1)), train_losses, marker='o')
     plt.title("Training Losses")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("Training Losses Plot")
+    plt.savefig("results/Training Losses Plot")
 
-    plt.plot(np.arange(len(val_losses)), val_losses)
+    plt.figure()
+    plt.plot(list(range(1, len(val_losses)+1)), val_losses, marker='o')
     plt.title("Validation Losses")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig("Validation Losses Plot")
+    plt.savefig("results/Validation Losses Plot")
 
     plt.show()
 
@@ -164,11 +164,11 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
     # Load magicVO_model & optimizer from ckpt
     if load_cnn_backone_ckpt:
         checkpoint = torch.load(cnn_backbone_ckpt_path)
-        cnn_backbone_ckpt_path.load_state_dict(checkpoint['cnn_backbone_model_state_dict'])
+        cnn_backbone_model.load_state_dict(checkpoint['cnn_backbone_model_state_dict'])
         optim_cnn_backbone.load_state_dict(checkpoint['cnn_backbone_optimizer_state_dict'])
         loaded_epoch = checkpoint['epoch']
         loaded_loss = checkpoint['loss']
-        print(f"Loaded cnn_backbone_model from saved ckpt. \tloaded epoch:{loaded_epoch}, \t loaded best validation loss: {loaded_loss}")
+        print(f"Loaded cnn_backbone_model from saved ckpt. Loaded epoch:{loaded_epoch}, Loaded best validation loss: {loaded_loss}")
     
     # Load cnn_backbone_model & optimizer from ckpt
     if load_magicVO_ckpt:
@@ -177,7 +177,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
         optim_magicVO.load_state_dict(checkpoint['magicVO_optimizer_state_dict'])
         loaded_epoch = checkpoint['epoch']
         loaded_loss = checkpoint['loss']
-        print(f"Loaded magicVO_model from saved ckpt. \tloaded epoch:{loaded_epoch}, \t loaded best validation loss: {loaded_loss}")
+        print(f"Loaded magicVO_model from saved ckpt. Loaded epoch:{loaded_epoch}, Loaded best validation loss: {loaded_loss}")
     
 
 
@@ -253,14 +253,14 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
         if (best_val_loss == None) or (best_val_loss >= avg_val_loss):
             # Save cnn_backbone
             torch.save({
-                'epoch': i,
+                'epoch': i+loaded_epoch,
                 'cnn_backbone_model_state_dict': cnn_backbone_model.state_dict(),
                 'cnn_backbone_optimizer_state_dict': optim_cnn_backbone.state_dict(),
                 'loss': avg_val_loss,
             }, cnn_backbone_ckpt_path)
             # Save MagicVO
             torch.save({
-                'epoch': i,
+                'epoch': i+loaded_epoch,
                 'magicVO_model_state_dict': magicVO_model.state_dict(),
                 'magicVO_optimizer_state_dict': optim_magicVO.state_dict(),
                 'loss': avg_val_loss,
