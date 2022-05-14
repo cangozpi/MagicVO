@@ -2,6 +2,7 @@ from data import VisualOdometryDataset
 import torch
 from models.FlowNet2_src import FlowNet2S
 from models.MagicVO_src import MagicVO_model
+from models.CNN_Backbone_src import CNN_Backbone_model
 from .utils.train import train
 
 
@@ -15,16 +16,21 @@ def main():
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, shuffle=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2)
     
-    # Load pre-trained FlowNet model
-    use_pretrained_flownet = True # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
-    flownet2_model = FlowNet2S()
-    if use_pretrained_flownet: # Use pretrained flownet model loaded from Caffee converted ckpts
-        flownet_path = 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar'
-        pretrained_dict = torch.load(flownet_path)['state_dict']
-        model_dict = flownet2_model.state_dict()
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
-        model_dict.update(pretrained_dict)
-        flownet2_model.load_state_dict(model_dict)
+    flownet_or_CNN_backbone = True # if True use flownet, if not use CNN_backbone
+
+    if flownet_or_CNN_backbone: # Use FlowNet as the feature extractor
+        # Load pre-trained FlowNet model
+        use_pretrained_flownet = True # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
+        flownet2_model = FlowNet2S()
+        if use_pretrained_flownet: # Use pretrained flownet model loaded from Caffee converted ckpts
+            flownet_path = 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar'
+            pretrained_dict = torch.load(flownet_path)['state_dict']
+            model_dict = flownet2_model.state_dict()
+            pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
+            model_dict.update(pretrained_dict)
+            flownet2_model.load_state_dict(model_dict)
+    else: # Use CNN_Backbone as the feature extractor
+        cnn_backbone_model = CNN_Backbone_model()
 
     # Initialize MagicVO model
     magicVO_model = MagicVO_model()
