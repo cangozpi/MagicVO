@@ -126,7 +126,7 @@ class VisualOdometryDataset(Dataset):
 
 
 def main():
-    path = "/home/cangozpi/Desktop/Docker_shared/Computer Vision for Autonomous Driving/MagicVO/dataset"
+    path = "./dataset"
     train_dataset = VisualOdometryDataset(path, 192, 640, ['00'])
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, shuffle=True)
     for i, batch in enumerate(train_dataloader):
