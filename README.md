@@ -13,9 +13,9 @@ Implementation of MagicVO: End-to-End Monocular Visual Odometry through Deep Bi-
 7. Fix install.sh issue of Pre-trained FlowNet model :warning:
 8. Testing of the model :heavy_check_mark:
 9. Utility functions for the visualization of the test results :heavy_check_mark:
-10. Add Data Augmentation
-11. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
-12. Configurations yaml file and command line arguments parsing
+10. Configurations yaml file and command line arguments parsing :heavy_check_mark:
+11. Add Data Augmentation
+12. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
 13. GPU training/Final Results 
 
 ---
@@ -35,8 +35,15 @@ $ bash install.sh
 ---
 
 ## TO Run:
-```bash
-$ python main.py
-```
+* To run using the configurations set in the config.yaml file. 
+    ```bash
+        $ python main.py
+    ```
+_or_
+
+* To run using the configurations set in the specified yaml file. 
+    ```bash
+        $ python main.py --config_path="<configurations yaml file path>"
+    ```
 
 ---

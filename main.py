@@ -5,6 +5,7 @@ from models.MagicVO_src.MagicVO_model import MagicVO_Model
 from models.CNN_Backbone_src.CNN_Backbone_model import CNN_backbone_model
 from utils.train import train_with_flownet, train_with_cnn_backbone
 from utils.test import test_with_cnn_backbone, test_with_flownet_backbone
+from utils.helpers import arg_parse, parse_config_yaml
 
 
 def train_mode():
@@ -76,36 +77,40 @@ def test_mode():
         
 
 def main():
-    #TODO: Parse config.yaml and command line args
-    # ======================
+    # Parse the command line arguments
+    args = arg_parse()
+    # Parse the configurations yaml file
     global config
-    config = {
-        "mode": "test", # determines whether to run test or the training script. valid values are ["train", "test"]
-        "train_dset_path": "./dataset", # path of the training dataset
-        "val_dset_path": "./dataset", # path of the validation dataset
-        "test_dset_path": "./dataset", # path of the test dataset
-        "height": 192, # height to crop the loaded images in the dataset
-        "width": 640, # width to crop the loaded images in the dataset
-        "sequences": ['00'], # sequences to load from kiti dataset
-        "batch_size": 2,
-        "epochs": 5,
-        "lr": 1e-3,
-        "k": 1, # k value in "combined_loss = mse_position_loss + (k * mse_orientation_loss)"     #TODO check its value from the paper
-        "flownet_or_CNN_backbone": False, # if True use flownet, if not use CNN_backbone
-        "use_pretrained_flownet": True, # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
-        "flownet_path": 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar', # file path of the pre-trained caffee ckpt for flownet
-        "train_flownet": False, # Whether to freeze the layers of flownet during training
-        "magicVO_ckpt_path": "./models/checkpoints/magicVO_best_val_ckpt.pth.tar", # Path to save/load the magicVO model checkpoints
-        "flownet_ckpt_path": "./models/checkpoints/flownet_best_val_ckpt.pth.tar", # Path to save/load the flownet model checkpoints
-        "cnn_backbone_ckpt_path": "./models/checkpoints/flownet_best_val_ckpt.pth.tar", # Path to save/load the cnn_backbone model checkpoints
-        "load_flownet_ckpt": False, # Load flownet from a ckpt saved during training
-        "load_magicVO_ckpt": False, # Load magicvo from a ckpt saved during training
-        "load_cnn_backone_ckpt": False, # Load cnn_backbone from a ckpt saved during training
-    }
+    config = parse_config_yaml(args.config_path)
+    # Template of the config is given below in comments: ============================
+    # config = {
+    #     "mode": "test", # determines whether to run test or the training script. valid values are ["train", "test"]
+    #     "train_dset_path": "./dataset", # path of the training dataset
+    #     "val_dset_path": "./dataset", # path of the validation dataset
+    #     "test_dset_path": "./dataset", # path of the test dataset
+    #     "height": 192, # height to crop the loaded images in the dataset
+    #     "width": 640, # width to crop the loaded images in the dataset
+    #     "sequences": ['00'], # sequences to load from kiti dataset
+    #     "batch_size": 2,
+    #     "epochs": 5,
+    #     "lr": 1e-3,
+    #     "k": 1, # k value in "combined_loss = mse_position_loss + (k * mse_orientation_loss)"     #TODO check its value from the paper
+    #     "flownet_or_CNN_backbone": False, # if True use flownet, if not use CNN_backbone
+    #     "use_pretrained_flownet": True, # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
+    #     "flownet_path": 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar', # file path of the pre-trained caffee ckpt for flownet
+    #     "train_flownet": False, # Whether to freeze the layers of flownet during training
+    #     "magicVO_ckpt_path": "./models/checkpoints/magicVO_best_val_ckpt.pth.tar", # Path to save/load the magicVO model checkpoints
+    #     "flownet_ckpt_path": "./models/checkpoints/flownet_best_val_ckpt.pth.tar", # Path to save/load the flownet model checkpoints
+    #     "cnn_backbone_ckpt_path": "./models/checkpoints/flownet_best_val_ckpt.pth.tar", # Path to save/load the cnn_backbone model checkpoints
+    #     "load_flownet_ckpt": False, # Load flownet from a ckpt saved during training
+    #     "load_magicVO_ckpt": False, # Load magicvo from a ckpt saved during training
+    #     "load_cnn_backone_ckpt": False, # Load cnn_backbone from a ckpt saved during training
+    # }
+    # ================================================================================
 
     # ============
-    assert config["mode"] in ["train", "test"]
-
+    assert config["mode"] in ["train", "test" ]
+    
     if config["mode"] == "train":
         train_mode()
     else:
