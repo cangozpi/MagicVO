@@ -7,6 +7,45 @@ from PIL import Image
 import torchvision.transforms as transforms
 
 
+# Helper functions
+def isRotationMatrix(R):
+        Rt = np.transpose(R)
+        shouldBeIdentity = np.dot(Rt, R)
+        I = np.identity(3, dtype=R.dtype)
+        n = np.linalg.norm(I - shouldBeIdentity)
+        return n < 1e-6
+
+def rotationMatrixToEulerAngles(R):
+    assert (isRotationMatrix(R))
+    sy = math.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
+    singular = sy < 1e-6
+
+    if not singular:
+        x = math.atan2(R[2, 1], R[2, 2])
+        y = math.atan2(-R[2, 0], sy)
+        z = math.atan2(R[1, 0], R[0, 0])
+    else:
+        x = math.atan2(-R[1, 2], R[1, 1])
+        y = math.atan2(-R[2, 0], sy)
+        z = 0
+    return np.array([x, y, z], dtype=np.float32)
+
+def eulerAnglesToRotationMatrix(theta):
+    R_x = np.array([[1, 0, 0],
+                    [0, np.cos(theta[0]), -np.sin(theta[0])],
+                    [0, np.sin(theta[0]), np.cos(theta[0])]
+                    ])
+    R_y = np.array([[np.cos(theta[1]), 0, np.sin(theta[1])],
+                    [0, 1, 0],
+                    [-np.sin(theta[1]), 0, np.cos(theta[1])]
+                    ])
+    R_z = np.array([[np.cos(theta[2]), -np.sin(theta[2]), 0],
+                    [np.sin(theta[2]), np.cos(theta[2]), 0],
+                    [0, 0, 1]
+                    ])
+    R = np.dot(R_z, np.dot(R_y, R_x))
+    return R
+
 class VisualOdometryDataset(Dataset):
     def __init__(self, datapath, height, width, sequences= ['00']):
         self.base_path = datapath
@@ -65,44 +104,6 @@ class VisualOdometryDataset(Dataset):
         image_path = os.path.join(self.base_path, 'sequences', sequence, 'image_2', '%06d' % index + '.png')
         return image_path
 
-    def isRotationMatrix(self, R):
-        Rt = np.transpose(R)
-        shouldBeIdentity = np.dot(Rt, R)
-        I = np.identity(3, dtype=R.dtype)
-        n = np.linalg.norm(I - shouldBeIdentity)
-        return n < 1e-6
-
-    def rotationMatrixToEulerAngles(self, R):
-        assert (self.isRotationMatrix(R))
-        sy = math.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
-        singular = sy < 1e-6
-
-        if not singular:
-            x = math.atan2(R[2, 1], R[2, 2])
-            y = math.atan2(-R[2, 0], sy)
-            z = math.atan2(R[1, 0], R[0, 0])
-        else:
-            x = math.atan2(-R[1, 2], R[1, 1])
-            y = math.atan2(-R[2, 0], sy)
-            z = 0
-        return np.array([x, y, z], dtype=np.float32)
-
-    def eulerAnglesToRotationMatrix(self, theta):
-        R_x = np.array([[1, 0, 0],
-                        [0, np.cos(theta[0]), -np.sin(theta[0])],
-                        [0, np.sin(theta[0]), np.cos(theta[0])]
-                        ])
-        R_y = np.array([[np.cos(theta[1]), 0, np.sin(theta[1])],
-                        [0, 1, 0],
-                        [-np.sin(theta[1]), 0, np.cos(theta[1])]
-                        ])
-        R_z = np.array([[np.cos(theta[2]), -np.sin(theta[2]), 0],
-                        [np.sin(theta[2]), np.cos(theta[2]), 0],
-                        [0, 0, 1]
-                        ])
-        R = np.dot(R_z, np.dot(R_y, R_x))
-        return R
-
     def matrix_rt(self, p):
         # Note that each row of the file contains the first 3 rows of a 4x4 homogeneous pose matrix flattened into one line.
         return np.vstack([np.reshape(p.astype(np.float32), (3, 4)), [[0., 0., 0., 1.]]])
@@ -118,7 +119,7 @@ class VisualOdometryDataset(Dataset):
                 pose2wrt1 = np.dot(np.linalg.inv(pose1), pose2)
                 R = pose2wrt1[0:3, 0:3]
                 t = pose2wrt1[0:3, 3]
-                angles = self.rotationMatrixToEulerAngles(R)
+                angles = rotationMatrixToEulerAngles(R)
                 odometries.append(np.concatenate((t, angles))) # --> [ ,3(i.e. [x,y,z])]
         return np.array(images_paths), np.array(odometries)  # --> [num_squences*num_lines(total_time_steps), 2] , [num_squences*num_lines(total_time_steps), 6 (3 (i.e. (t, angles)) + 3(e.g. [x,y,z] or t) = 6)]
     
