@@ -10,7 +10,7 @@ def main():
     #TODO: Parse config.yaml and command line args
 
     # Initialize DataLoaders
-    dset_path = "/home/cangozpi/Desktop/Docker_shared/Computer Vision for Autonomous Driving/MagicVO/dataset"
+    dset_path = "./dataset"
     train_dataset = VisualOdometryDataset(dset_path, 192, 640, ['00'])
     val_dataset = VisualOdometryDataset(dset_path, 192, 640, ['00'])
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, shuffle=False)
