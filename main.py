@@ -4,7 +4,7 @@ import torch
 from models.MagicVO_src.MagicVO_model import MagicVO_Model
 from models.CNN_Backbone_src.CNN_Backbone_model import CNN_backbone_model
 from utils.train import train_with_flownet, train_with_cnn_backbone
-from utils.test import test_with_cnn_backbone
+from utils.test import test_with_cnn_backbone, test_with_flownet_backbone
 
 
 def train_mode():
@@ -79,21 +79,17 @@ def test_mode():
             pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
             model_dict.update(pretrained_dict)
             flownet2_model.load_state_dict(model_dict)
+            print('*' *30)
+            print("Loaded pre-trained flownet_model from caffee ckpts.")
     
         # Initialize MagicVO model
         magicVO_model = MagicVO_Model()
 
-        # Train the model
-        epochs = 5
-        lr = 1e-3
-        k = 1 #TODO check its value from the paper
-        train_flownet = False # Whether to freeze the layers of flownet during training
-        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to save the magicVO model checkpoints
-        flownet_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to save the flownet model checkpoints
-        load_flownet_ckpt = False # Load flownet from a ckpt saved during training
-        load_magicVO_ckpt = False # Load magicvo from a ckpt saved during training
-        train_with_flownet(flownet2_model, magicVO_model, train_dataloader, val_dataloader, epochs, lr, k, flownet_ckpt_path, magicVO_ckpt_path,\
-            train_flownet=train_flownet, load_flownet_ckpt=load_flownet_ckpt, load_magicVO_ckpt=load_magicVO_ckpt)
+        # Test the model
+        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to load the magicVO model checkpoints
+        flownet_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to load the flownet model checkpoints
+        load_flownet_ckpt = False # Load flownet from a ckpt saved during training or use pre-trained flownet
+        test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, flownet_ckpt_path, magicVO_ckpt_path, load_flownet_ckpt)
     else: # Use CNN_Backbone as the feature extractor
         # Initialize CNN_Backbone_model 
         cnn_backbone_model = CNN_backbone_model()
@@ -102,8 +98,8 @@ def test_mode():
 
         # Test the model
         k = 1 #TODO check its value from the paper
-        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to save the magicVO model checkpoints
-        cnn_backbone_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to save the cnn_backbone model checkpoints
+        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to load the magicVO model checkpoints
+        cnn_backbone_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to load the cnn_backbone model checkpoints
         test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, cnn_backbone_ckpt_path, magicVO_ckpt_path)
         
 

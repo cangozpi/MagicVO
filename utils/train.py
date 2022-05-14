@@ -29,7 +29,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
     # Load magicVO_model & optimizer from ckpt
     if load_flownet_ckpt:
         checkpoint = torch.load(flownet_ckpt_path)
-        flownet_ckpt_path.load_state_dict(checkpoint['flownet_model_state_dict'])
+        flownet_model.load_state_dict(checkpoint['flownet_model_state_dict'])
         optim_flownet.load_state_dict(checkpoint['flownet_optimizer_state_dict'])
         loaded_epoch = checkpoint['epoch']
         loaded_loss = checkpoint['loss']
