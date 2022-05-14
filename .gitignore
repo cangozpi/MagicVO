@@ -1,3 +1,7 @@
-dataset/
-models/checkpoints/
+dataset/*
+!dataset/.gitkeep
+
+models/checkpoints/*
+!models/checkpoints/.gitkeep
+
 __pycache__/

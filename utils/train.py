@@ -209,7 +209,6 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
             optim_magicVO.zero_grad()
 
             # Extract image features using FlowNet/CNNs
-            print(img_cat.shape, "img_cat.shape =========== DEBUG")
             out = cnn_backbone_model(img_cat)
             # make 6 DoF predictions using MagicVO_model
             train_loss = magicVO_model.loss(out, odometry, k)

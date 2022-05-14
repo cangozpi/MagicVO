@@ -28,3 +28,10 @@ $ bash install.sh
 * DataLoader adapted from https://github.com/EduardoTayupanta/VisualOdometry
 
 ---
+
+## TO Run:
+```bash
+$ python main.py
+```
+
+---
