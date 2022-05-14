@@ -45,19 +45,14 @@ def train_mode():
 
 def test_mode():
     # Initialize DataLoaders
-    dset_path = "./dataset"
-    test_dataset = VisualOdometryDataset(dset_path, 192, 640, ['00'])
-    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=2, shuffle=False)
-    
-    flownet_or_CNN_backbone = False # if True use flownet, if not use CNN_backbone
+    test_dataset = VisualOdometryDataset(config["test_dset_path"], config["height"], config["width"], config["sequences"])
+    test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=config["batch_size"], shuffle=False)
 
-    if flownet_or_CNN_backbone: # Use FlowNet as the feature extractor
+    if config["flownet_or_CNN_backbone"]: # Use FlowNet as the feature extractor
         # Load pre-trained FlowNet model
-        use_pretrained_flownet = True # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
         flownet2_model = FlowNet2S()
-        if use_pretrained_flownet: # Use pretrained flownet model loaded from Caffee converted ckpts
-            flownet_path = 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar'
-            pretrained_dict = torch.load(flownet_path)['state_dict']
+        if config["use_pretrained_flownet"]: # Use pretrained flownet model loaded from Caffee converted ckpts
+            pretrained_dict = torch.load(config["flownet_path"])['state_dict']
             model_dict = flownet2_model.state_dict()
             pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
             model_dict.update(pretrained_dict)
@@ -69,10 +64,7 @@ def test_mode():
         magicVO_model = MagicVO_Model()
 
         # Test the model
-        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to load the magicVO model checkpoints
-        flownet_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to load the flownet model checkpoints
-        load_flownet_ckpt = False # Load flownet from a ckpt saved during training or use pre-trained flownet
-        test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, flownet_ckpt_path, magicVO_ckpt_path, load_flownet_ckpt)
+        test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, config["flownet_ckpt_path"], config["magicVO_ckpt_path"], config["load_flownet_ckpt"])
     else: # Use CNN_Backbone as the feature extractor
         # Initialize CNN_Backbone_model 
         cnn_backbone_model = CNN_backbone_model()
@@ -80,10 +72,7 @@ def test_mode():
         magicVO_model = MagicVO_Model()
 
         # Test the model
-        k = 1 #TODO check its value from the paper
-        magicVO_ckpt_path = "./models/checkpoints/magicVO_best_val_ckpt.pth.tar" # Path to load the magicVO model checkpoints
-        cnn_backbone_ckpt_path = "./models/checkpoints/flownet_best_val_ckpt.pth.tar" # Path to load the cnn_backbone model checkpoints
-        test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, cnn_backbone_ckpt_path, magicVO_ckpt_path)
+        test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, config["cnn_backbone_ckpt_path"], config["magicVO_ckpt_path"])
         
 
 def main():
@@ -91,16 +80,17 @@ def main():
     # ======================
     global config
     config = {
-        "mode": "train", # determines whether to run test or the training script. valid values are ["train", "test"]
+        "mode": "test", # determines whether to run test or the training script. valid values are ["train", "test"]
         "train_dset_path": "./dataset", # path of the training dataset
         "val_dset_path": "./dataset", # path of the validation dataset
+        "test_dset_path": "./dataset", # path of the test dataset
         "height": 192, # height to crop the loaded images in the dataset
         "width": 640, # width to crop the loaded images in the dataset
         "sequences": ['00'], # sequences to load from kiti dataset
         "batch_size": 2,
         "epochs": 5,
         "lr": 1e-3,
-        "k": 1, #TODO check its value from the paper
+        "k": 1, # k value in "combined_loss = mse_position_loss + (k * mse_orientation_loss)"     #TODO check its value from the paper
         "flownet_or_CNN_backbone": False, # if True use flownet, if not use CNN_backbone
         "use_pretrained_flownet": True, # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
         "flownet_path": 'models/checkpoints/FlowNet2-S_checkpoint.pth.tar', # file path of the pre-trained caffee ckpt for flownet
@@ -111,11 +101,6 @@ def main():
         "load_flownet_ckpt": False, # Load flownet from a ckpt saved during training
         "load_magicVO_ckpt": False, # Load magicvo from a ckpt saved during training
         "load_cnn_backone_ckpt": False, # Load cnn_backbone from a ckpt saved during training
-        
-
-
-
-
     }
 
     # ============
