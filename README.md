@@ -5,8 +5,8 @@ Implementation of MagicVO: End-to-End Monocular Visual Odometry through Deep Bi-
 
 ## __TODOs:__
 1. DataLoaders. :heavy_check_mark:
-2. Pre-trained FlowNet model
-3. MagicVO Implementation
+2. Pre-trained FlowNet model :heavy_check_mark:
+3. MagicVO Implementation :heavy_check_mark:
 4. Training/Validation Loop
 5. Saving/Loading trained models
 6. configurations yaml file and command line arguments parsing
