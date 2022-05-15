@@ -188,8 +188,8 @@ class FlowNet2S(FlowNetS):
             dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
         x = (inputs - rgb_mean) / self.rgb_max
         x = torch.cat((x[:, :, 0, :, :], x[:, :, 1, :, :]), dim=1)
-
         flows = super(FlowNet2S, self).forward(x)
+        return flows # modified by me
         if self.training:
             return flows
         else:

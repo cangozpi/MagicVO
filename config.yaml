@@ -1,4 +1,4 @@
-mode: "train" # determines whether to run test or the training script. valid values are ["train", "test"]
+mode: "test" # determines whether to run test or the training script. valid values are ["train", "test"]
 train_dset_path: "./dataset" # path of the training dataset
 val_dset_path: "./dataset" # path of the validation dataset
 test_dset_path: "./dataset" # path of the test dataset

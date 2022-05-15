@@ -80,10 +80,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 flownet_model.eval()
                 # Extract image features using FlowNet/CNNs
                 with torch.no_grad():
-                    print(img_cat.shape, "flownet input shape")
                     out = flownet_model(img_cat)
-                    
-                    print(out.shape, odometry.shape, "flownet out.shape / odometry shape")
                 # make 6 DoF predictions using MagicVO_model
                 train_loss = magicVO_model.loss(out, odometry, k)
                 
