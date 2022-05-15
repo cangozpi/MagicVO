@@ -56,6 +56,9 @@ def test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, f
     for i, (img_cat, odometry) in enumerate(test_dataloader): # per batch evaluation
         img_cat = img_cat.to(device)
         odometry = odometry.to(device)
+        # Note that FlowNetS requires inputs as [B, 3(RGB), 2(pair), H, W] so reshape the image
+        # img_cat = [BX 3X2 (RGBXpair), H , W]
+        img_cat = img_cat.view(img_cat.shape[0], 3, 2, img_cat.shape[-2], img_cat.shape[-1])
         
         with torch.no_grad():
             # Extract image features using FlowNet/CNNs

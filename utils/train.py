@@ -63,26 +63,27 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
     # Train/Validate the model
     for i in range(epochs- loaded_epoch): # train for #epochs
         # ======== Train
-        flownet_model.train()
         magicVO_model.train()
         cum_train_loss = 0
         for step, (img_cat, odometry) in enumerate(train_dataloader): # per batch training
             img_cat = img_cat.to(device)
             odometry = odometry.to(device)
+            # Note that FlowNetS requires inputs as [B, 3(RGB), 2(pair), H, W] so reshape the image
+            # img_cat = [BX 3X2 (RGBXpair), H , W]
+            img_cat = img_cat.view(img_cat.shape[0], 3, 2, img_cat.shape[-2], img_cat.shape[-1])
             
             optim_flownet.zero_grad()
             optim_magicVO.zero_grad()
 
             train_loss = 0
             if train_flownet == False: # FlowNet model is not trainable
+                flownet_model.eval()
                 # Extract image features using FlowNet/CNNs
                 with torch.no_grad():
-                    # Note that FlowNetS requires inputs as [B, 3(RGB), 2(pair), H, W] so reshape the image
-                    # img_cat = [BX 3X2 (RGBXpair), H , W]
-                    img_cat = img_cat.view(img_cat.shape[0], 3, 2, img_cat.shape[-2], img_cat.shape[-1])
-                    out_tuple = flownet_model(img_cat)
-                    out = out_tuple[0]
-                    print(out.shape, odometry.shape, "LOOOOO out.shape")
+                    print(img_cat.shape, "flownet input shape")
+                    out = flownet_model(img_cat)
+                    
+                    print(out.shape, odometry.shape, "flownet out.shape / odometry shape")
                 # make 6 DoF predictions using MagicVO_model
                 train_loss = magicVO_model.loss(out, odometry, k)
                 
@@ -91,6 +92,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 optim_magicVO.step()
 
             else: # FlowNet model is trainable
+                flownet_model.train()
                 # Extract image features using FlowNet/CNNs
                 out = flownet_model(img_cat)
                 # make 6 DoF predictions using MagicVO_model
@@ -117,6 +119,9 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
         for img_cat, odometry in val_dataloader: # per batch evaluation
             img_cat = img_cat.to(device)
             odometry = odometry.to(device)
+            # Note that FlowNetS requires inputs as [B, 3(RGB), 2(pair), H, W] so reshape the image
+            # img_cat = [BX 3X2 (RGBXpair), H , W]
+            img_cat = img_cat.view(img_cat.shape[0], 3, 2, img_cat.shape[-2], img_cat.shape[-1])
             
             with torch.no_grad():
                 # Extract image features using FlowNet/CNNs

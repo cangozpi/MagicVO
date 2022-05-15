@@ -20,9 +20,9 @@ class MagicVO_Model(nn.Module):
 
     def forward(self, x):
         # Flatten the input:
-        print(x.shape, "NEEE")
+        print(x.shape, "MagicVO input shape")
         out = x.view(-1, self.input_size) # --> [B, L, 10*3*1024]
-        print(out.shape, "uff")
+        print(out.shape, "MagicVO input flattened")
         out = out.unsqueeze(0)
         
         # Pass through Recurrent Layers:
@@ -32,8 +32,8 @@ class MagicVO_Model(nn.Module):
         out, _ = self.bi_lstm_model(out, (h0, c0)) # --> [B, L, hidden_size]
         # Pass through Dense Layers:
         out = self.fc(out) # --> [B, L, 6]
-        print(out.shape, " IIII")
         out = out.squeeze(0) # --> [L, 6] # Note that B = 1
+        print(out.shape, " MagicVO output shape")
         return out
 
     def loss(self, x, targets, k):
