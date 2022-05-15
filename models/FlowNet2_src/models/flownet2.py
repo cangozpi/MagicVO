@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.init as nn_init
 
+from models.FlowNet2_src.flowlib import flow_to_image
+
 # from .components import FlowNetC, FlowNetS, FlowNetSD, FlowNetFusion
 from .components import FlowNetS
 # (Yuliang) Change directory structure
@@ -182,13 +184,19 @@ class FlowNet2S(FlowNetS):
         self.div_flow = div_flow
 
     def forward(self, inputs):
+        print(inputs.shape, "inputs.shape UUUUUUUUUU")
+        print("waooov ", inputs.size()[:2], " jkl ", inputs.size()[:2] + (-1, ))
+        print(inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(dim=-1).shape, "ilki inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(dim=-1) waoovv")
         rgb_mean = inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(
             dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
+        print(rgb_mean.shape, "rgb_mean.shape UUUUUUUU")
         x = (inputs - rgb_mean) / self.rgb_max
+        print(x.shape, "uuuuuuuuuuuuuuuu")
         x = torch.cat((x[:, :, 0, :, :], x[:, :, 1, :, :]), dim=1)
 
         flows = super(FlowNet2S, self).forward(x)
-
+        print(flows[0].shape, "flows[0].shape")
+        print(flows[1].shape, "flows[1].shape")
         if self.training:
             return flows
         else:
