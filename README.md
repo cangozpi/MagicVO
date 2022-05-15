@@ -2,6 +2,16 @@
 Implementation of the [_MagicVO: End-to-End Monocular Visual Odometry through Deep Bi-directional Recurrent Convolutional Neural Network_](https://arxiv.org/abs/1811.10964) paper in pytorch.
 
 ---
+## Installing Python Packages:
+* Using conda Environments:
+    ```bash
+    $ conda create --name <env> --file requirements.txt
+    ```
+* Using pip to install:
+    ```bash
+    $ python -m pip install -r requirements.txt
+
+---
 
 ## Installation (FlowNet2)
 1. 
@@ -11,7 +21,7 @@ Implementation of the [_MagicVO: End-to-End Monocular Visual Odometry through De
     $ bash install.sh
     ```
 
-2. \# Note that if you are going to use __FlowNet__ model, you you need to uncomment line 2 of main.py:
+2. If you are going to use __FlowNet__ model, you you need to uncomment line 2 of main.py:
     ```python
     # from models.FlowNet2_src import FlowNet2S
     ```
@@ -41,26 +51,28 @@ _or_
 
 ---
 
-## Code structure:
+## Code Structure:
 * __main.py__: Calls train/test scripts with the parsed configurations.
 * __data.py__: Constructs pytorch Datasets for KITTI Odometry dataset.
 * __config.yaml__: Configurations/hyper-parameters for the training/testing.
-* __utils__:
+* __utils/__ -->
     * __train.py__: Implements model training functionality.
     * __test.py__: Implements model testing functionality.
     * __hellpers.py__: Implements helper functions for parsing the command line arguments.
 * __results__: Training/Testing results/plots are saved to this folder.
-* __models__:
+* __models/__ -->
     * __CNN_Backbone_src__:
         * __CNN_Backbone_model.py__: Implements the CNN Architecture which is illustrated in the _MagicVO_ paper as a pytorch Module. This architecture is an available alternative to using the _FlowNet_ model.
     * __FlowNet2_src__: Contains the implemenation of the _FlowNet_ model in pytorch. This source code is taken from https://github.com/vt-vl-lab/flownet2.pytorch. This architecture is an available alternative to using the _CNN architecture_.
         * __install.sh__: This bash script needs to be run in order to install custom layers used by the _FlowNet_ model.
-    * __MagicVO_src__:
+        * __...__: Many other files/folders required by the _FlowNet_ implementation. 
+    * __MagicVO_src/__ -->
         * __MagicVO_model.py__: Implements the BI-LSTM+MLP architecture explained in the _MagicVO_ paper as a pytorch Module.
     * __checkpoints__: This is the directory where the saved/to be loaded model checkpoints for all of the models are saved.
-    * __dataset__*: This folder corresponds to the KITTI Odometry dataset. Simply replace this folder with the KITTI Odometry dataset you've downloaded on your computer by using the same name.
+    * __dataset__: This folder corresponds to the KITTI Odometry dataset. Simply replace this folder with the KITTI Odometry dataset you've downloaded on your computer by using the same name.
+* __requirements.txt__: This file can be used with pip/conda to install the python packages which were used during the development of this code. 
 
-    ---
+---
 
 ## __TODOs:__
 1. DataLoaders. :heavy_check_mark:
@@ -77,6 +89,5 @@ _or_
 12. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
 13. GPU training/Final Results 
 
-
-
+---
 
