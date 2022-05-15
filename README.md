@@ -28,13 +28,6 @@ Implementation of the [_MagicVO: End-to-End Monocular Visual Odometry through De
 
 <u>_\# Note that if you are __not__ going to use __FlowNet__ model, you can skip this step and use the alternative __CNN architecture__._</u>
 
-
-* FlowNet2 Model adapted from https://github.com/vt-vl-lab/flownet2.pytorch
-
----
-
-* DataLoader&Test result Visualizations adapted from https://github.com/EduardoTayupanta/VisualOdometry
-
 ---
 
 ## To Run:
@@ -88,6 +81,23 @@ _or_
 11. Add Data Augmentation
 12. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
 13. GPU training/Final Results 
+
+---
+
+## References:
+* DataLoader&Test result Visualizations adapted from https://github.com/EduardoTayupanta/VisualOdometry
+
+* FlowNet2 Model adapted from https://github.com/vt-vl-lab/flownet2.pytorch
+    ```
+    @InProceedings{IMKDB17,
+    author       = "E. Ilg and N. Mayer and T. Saikia and M. Keuper and A. Dosovitskiy and T. Brox",
+    title        = "FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks",
+    booktitle    = "IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+    month        = "Jul",
+    year         = "2017",
+    url          = "http://lmb.informatik.uni-freiburg.de//Publications/2017/IMKDB17"
+    }
+    ```
 
 ---
 
