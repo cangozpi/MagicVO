@@ -63,7 +63,6 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
     # Train/Validate the model
     for i in range(epochs- loaded_epoch): # train for #epochs
         # ======== Train
-        flownet_model.train()
         magicVO_model.train()
         cum_train_loss = 0
         for step, (img_cat, odometry) in enumerate(train_dataloader): # per batch training
@@ -75,6 +74,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
 
             train_loss = 0
             if train_flownet == False: # FlowNet model is not trainable
+                flownet_model.eval()
                 # Extract image features using FlowNet/CNNs
                 with torch.no_grad():
                     out = flownet_model(img_cat)
@@ -86,6 +86,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 optim_magicVO.step()
 
             else: # FlowNet model is trainable
+                flownet_model.train()
                 # Extract image features using FlowNet/CNNs
                 out = flownet_model(img_cat)
                 # make 6 DoF predictions using MagicVO_model
