@@ -3,13 +3,26 @@ Implementation of the [_MagicVO: End-to-End Monocular Visual Odometry through De
 
 ---
 ## Installing Python Packages:
-* Using conda Environments:
+* Using conda environment:
     ```bash
     $ conda create --name <env> --file requirements.txt
     ```
 * Using pip to install:
     ```bash
     $ python -m pip install -r requirements.txt
+
+---
+
+## Converted Caffe Pre-trained Models
+* [FlowNet2](https://drive.google.com/file/d/1hF8vS6YeHkx3j2pfCeQqqZGwA_PJq_Da/view?usp=sharing)[620MB]
+* [FlowNet2-C](https://drive.google.com/file/d/1BFT6b7KgKJC8rA59RmOVAXRM_S7aSfKE/view?usp=sharing)[149MB]
+* [FlowNet2-CS](https://drive.google.com/file/d/1iBJ1_o7PloaINpa8m7u_7TsLCX0Dt_jS/view?usp=sharing)[297MB]
+* [FlowNet2-CSS](https://drive.google.com/file/d/157zuzVf4YMN6ABAQgZc8rRmR5cgWzSu8/view?usp=sharing)[445MB]
+* [FlowNet2-CSS-ft-sd](https://drive.google.com/file/d/1R5xafCIzJCXc8ia4TGfC65irmTNiMg6u/view?usp=sharing)[445MB]
+* [FlowNet2-S](https://drive.google.com/file/d/1V61dZjFomwlynwlYklJHC-TLfdFom3Lg/view?usp=sharing)[148MB]
+* [FlowNet2-SD](https://drive.google.com/file/d/1QW03eyYG_vD-dT-Mx4wopYvtPu_msTKn/view?usp=sharing)[173MB]
+
+_# Note that the default code uses __FlowNet2-S__ weights._
 
 ---
 
@@ -72,7 +85,7 @@ _or_
 ## References:
 * DataLoader&Test result Visualizations adapted from https://github.com/EduardoTayupanta/VisualOdometry
 
-* FlowNet2 Model adapted from https://github.com/vt-vl-lab/flownet2.pytorch
+* FlowNet2 Model adapted from https://github.com/vt-vl-lab/flownet2.pytorch. Links for the pre-trained Caffe weights belong here.
     ```
     @InProceedings{IMKDB17,
     author       = "E. Ilg and N. Mayer and T. Saikia and M. Keuper and A. Dosovitskiy and T. Brox",
@@ -81,6 +94,26 @@ _or_
     month        = "Jul",
     year         = "2017",
     url          = "http://lmb.informatik.uni-freiburg.de//Publications/2017/IMKDB17"
+    }
+    ```
+* [___MagicVO__: End-to-End Monocular Visual Odometry through Deep Bi-directional Recurrent Convolutional Neural Network_](https://arxiv.org/abs/1811.10964)
+    ```
+    @misc{https://doi.org/10.48550/arxiv.1811.10964,
+    doi = {10.48550/ARXIV.1811.10964},
+    
+    url = {https://arxiv.org/abs/1811.10964},
+    
+    author = {Jiao, Jian and Jiao, Jichao and Mo, Yaokai and Liu, Weilun and Deng, Zhongliang},
+    
+    keywords = {Computer Vision and Pattern Recognition (cs.CV), FOS: Computer and information sciences, FOS: Computer and information sciences},
+    
+    title = {MagicVO: End-to-End Monocular Visual Odometry through Deep Bi-directional Recurrent Convolutional Neural Network},
+    
+    publisher = {arXiv},
+    
+    year = {2018},
+    
+    copyright = {arXiv.org perpetual, non-exclusive license}
     }
     ```
 
