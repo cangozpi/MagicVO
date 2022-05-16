@@ -151,7 +151,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 'loss': avg_val_loss,
             }, magicVO_ckpt_path)
             print("*" * 20)
-            print(f"Saved model checkpoint at epoch: {i+loaded_epoch} with Validation Loss: {avg_val_loss}")
+            print(f"Saved model checkpoint at epoch: {i+loaded_epoch}, \tTraining Loss: {avg_train_loss},  \twith Validation Loss: {avg_val_loss}")
         else:
              print(f'] Epoch: {i+loaded_epoch}/{epochs}, \tTraining Loss: {avg_train_loss}, \tValidation Loss: {avg_val_loss}')
 
@@ -273,7 +273,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
                 'loss': avg_val_loss,
             }, magicVO_ckpt_path)
             print("*" * 20)
-            print(f"Saved model checkpoint at epoch: {i+loaded_epoch} with Validation Loss: {avg_val_loss}")
+            print(f"Saved model checkpoint at epoch: {i+loaded_epoch}, \tTraining Loss: {avg_train_loss},  \twith Validation Loss: {avg_val_loss}")
         else:
              print(f'] Epoch: {i+loaded_epoch}/{epochs}, \tTraining Loss: {avg_train_loss}, \tValidation Loss: {avg_val_loss}')
 

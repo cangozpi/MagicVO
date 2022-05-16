@@ -4,7 +4,9 @@ val_dset_path: "./dataset" # path of the validation dataset
 test_dset_path: "./dataset" # path of the test dataset
 height: 192 # height to crop the loaded images in the dataset
 width: 640 # width to crop the loaded images in the dataset
-sequences: ['00'] # sequences to load from kiti dataset
+train_sequences: ['00'] # sequences to load from kitti dataset for training
+val_sequences: ['00'] # sequences to load from kitti dataset for validation
+test_sequences: ['00'] # sequences to load from kitti dataset for testing
 batch_size: 2
 epochs: 5
 lr: 0.001

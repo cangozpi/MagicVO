@@ -10,8 +10,8 @@ from utils.helpers import arg_parse, parse_config_yaml
 
 def train_mode():
     # Initialize DataLoaders
-    train_dataset = VisualOdometryDataset(config["train_dset_path"], config["height"], config["width"], config["sequences"])
-    val_dataset = VisualOdometryDataset(config["val_dset_path"], config["height"], config["width"], config["sequences"])
+    train_dataset = VisualOdometryDataset(config["train_dset_path"], config["height"], config["width"], config["train_sequences"])
+    val_dataset = VisualOdometryDataset(config["val_dset_path"], config["height"], config["width"], config["val_sequences"])
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=config["batch_size"])
     
@@ -46,7 +46,7 @@ def train_mode():
 
 def test_mode():
     # Initialize DataLoaders
-    test_dataset = VisualOdometryDataset(config["test_dset_path"], config["height"], config["width"], config["sequences"])
+    test_dataset = VisualOdometryDataset(config["test_dset_path"], config["height"], config["width"], config["test_sequences"])
     test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=config["batch_size"], shuffle=False)
 
     if config["flownet_or_CNN_backbone"]: # Use FlowNet as the feature extractor
