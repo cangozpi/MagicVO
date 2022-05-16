@@ -61,7 +61,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
     val_losses = [] # i^th index holds the avg validation loss for the i^th epoch
     best_val_loss = None if loaded_loss == None else loaded_loss # best validation loss (used during saving checkpoints)
     # Train/Validate the model
-    for i in range(epochs- loaded_epoch): # train for #epochs
+    for i in range(epochs - loaded_epoch): # train for #epochs
         # ======== Train
         magicVO_model.train()
         cum_train_loss = 0

@@ -46,7 +46,7 @@ _or_
     * __MagicVO_src/__ -->
         * __MagicVO_model.py__: Implements the BI-LSTM+MLP architecture explained in the _MagicVO_ paper as a pytorch Module.
     * __checkpoints__: This is the directory where the saved/to be loaded model checkpoints for all of the models are saved.
-    * __dataset__: This folder corresponds to the KITTI Odometry dataset. Simply replace this folder with the KITTI Odometry dataset you've downloaded on your computer by using the same name.
+* __dataset__: This folder corresponds to the KITTI Odometry dataset. Simply replace this folder with the KITTI Odometry dataset you've downloaded on your computer by using the same name. In other words this folder should have "__poses__" and "__sequences__" folders inside.
 * __requirements.txt__: This file can be used with pip/conda to install the python packages which were used during the development of this code. 
 
 ---
