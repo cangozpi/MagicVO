@@ -13,28 +13,13 @@ Implementation of the [_MagicVO: End-to-End Monocular Visual Odometry through De
 
 ---
 
-## Installation (FlowNet2)
-1. 
-    ```bash
-    # install custom layers
-    $ cd FlowNet2_src
-    $ bash install.sh
-    ```
-
-2. If you are going to use __FlowNet__ model, you you need to uncomment line 2 of main.py:
-    ```python
-    # from models.FlowNet2_src import FlowNet2S
-    ```
-
-<u>_\# Note that if you are __not__ going to use __FlowNet__ model, you can skip this step and use the alternative __CNN architecture__._</u>
-
----
-
 ## To Run:
-* To run using the configurations set in the config.yaml file. 
+* To run using the configurations set in the __config.yaml__ file. 
     ```bash
         $ python main.py
     ```
+    _#Note: Check out __config.yaml__ to see with which configurations you are runnign the code with. Code behaviour such as training/testing, model hyperparameters and much more can be configured using this file. Please refer to the comments in this file to understand what each parameter does._
+
 _or_
 
 * To run using the configurations set in the specified yaml file. 
@@ -47,17 +32,16 @@ _or_
 ## Code Structure:
 * __main.py__: Calls train/test scripts with the parsed configurations.
 * __data.py__: Constructs pytorch Datasets for KITTI Odometry dataset.
-* __config.yaml__: Configurations/hyper-parameters for the training/testing.
+* __config.yaml__: Configurations/hyper-parameters for the training/testing. Check the comments in this file to modify code behaviour.
 * __utils/__ -->
     * __train.py__: Implements model training functionality.
     * __test.py__: Implements model testing functionality.
     * __hellpers.py__: Implements helper functions for parsing the command line arguments.
 * __results__: Training/Testing results/plots are saved to this folder.
 * __models/__ -->
-    * __CNN_Backbone_src__:
+    * __CNN_Backbone_src__ -->
         * __CNN_Backbone_model.py__: Implements the CNN Architecture which is illustrated in the _MagicVO_ paper as a pytorch Module. This architecture is an available alternative to using the _FlowNet_ model.
-    * __FlowNet2_src__: Contains the implemenation of the _FlowNet_ model in pytorch. This source code is taken from https://github.com/vt-vl-lab/flownet2.pytorch. This architecture is an available alternative to using the _CNN architecture_.
-        * __install.sh__: This bash script needs to be run in order to install custom layers used by the _FlowNet_ model.
+    * __FlowNet2_src__ --> Contains the implemenation of the _FlowNet_ model in pytorch. This source code is taken/modified from https://github.com/vt-vl-lab/flownet2.pytorch. This architecture is an available alternative to using the _CNN architecture_.
         * __...__: Many other files/folders required by the _FlowNet_ implementation. 
     * __MagicVO_src/__ -->
         * __MagicVO_model.py__: Implements the BI-LSTM+MLP architecture explained in the _MagicVO_ paper as a pytorch Module.
@@ -74,13 +58,14 @@ _or_
 4. MagicVO Implementation :heavy_check_mark:
 5. Training/Validation Loop :heavy_check_mark:
 6. Saving/Loading trained models :heavy_check_mark:
-7. Fix install.sh issue of Pre-trained FlowNet model (only for CPU) :warning:
+7. Fix install.sh issue of Pre-trained FlowNet model (only for CPU) :heavy_check_mark:
 8. Testing of the model :heavy_check_mark:
 9. Utility functions for the visualization of the test results :heavy_check_mark:
 10. Configurations yaml file and command line arguments parsing :heavy_check_mark:
-11. Add Data Augmentation
-12. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
-13. GPU training/Final Results 
+11. Initial GPU training
+12. Add Data Augmentation
+13. Add Attention based architecture implementation alternative to the bi-lstm MagicVO model.
+14. Final GPU training/sharing results 
 
 ---
 

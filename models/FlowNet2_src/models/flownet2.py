@@ -2,10 +2,13 @@ import torch
 import torch.nn as nn
 import torch.nn.init as nn_init
 
-from .components import FlowNetC, FlowNetS, FlowNetSD, FlowNetFusion
+from models.FlowNet2_src.flowlib import flow_to_image
+
+# from .components import FlowNetC, FlowNetS, FlowNetSD, FlowNetFusion
+from .components import FlowNetS
 # (Yuliang) Change directory structure
 from .components import tofp16, tofp32, save_grad
-from .components import ChannelNorm, Resample2d
+# from .components import ChannelNorm, Resample2d
 
 
 class FlowNet2(nn.Module):
@@ -150,27 +153,27 @@ class FlowNet2(nn.Module):
         return flownetfusion_flow
 
 
-class FlowNet2C(FlowNetC):
+# class FlowNet2C(FlowNetC):
 
-    def __init__(self, with_bn=False, fp16=False, rgb_max=255., div_flow=20):
-        super(FlowNet2C, self).__init__(with_bn, fp16)
-        self.rgb_max = rgb_max
-        self.div_flow = div_flow
+#     def __init__(self, with_bn=False, fp16=False, rgb_max=255., div_flow=20):
+#         super(FlowNet2C, self).__init__(with_bn, fp16)
+#         self.rgb_max = rgb_max
+#         self.div_flow = div_flow
 
-    def forward(self, inputs):
-        rgb_mean = inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(
-            dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
+#     def forward(self, inputs):
+#         rgb_mean = inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(
+#             dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
 
-        x = (inputs - rgb_mean) / self.rgb_max
-        x1 = x[:, :, 0, :, :]
-        x2 = x[:, :, 1, :, :]
+#         x = (inputs - rgb_mean) / self.rgb_max
+#         x1 = x[:, :, 0, :, :]
+#         x2 = x[:, :, 1, :, :]
 
-        flows = super(FlowNet2C, self).forward(x1, x2)
+#         flows = super(FlowNet2C, self).forward(x1, x2)
 
-        if self.training:
-            return flows
-        else:
-            return self.upsample1(flows[0] * self.div_flow)
+#         if self.training:
+#             return flows
+#         else:
+#             return self.upsample1(flows[0] * self.div_flow)
 
 
 class FlowNet2S(FlowNetS):
@@ -185,34 +188,33 @@ class FlowNet2S(FlowNetS):
             dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
         x = (inputs - rgb_mean) / self.rgb_max
         x = torch.cat((x[:, :, 0, :, :], x[:, :, 1, :, :]), dim=1)
-
         flows = super(FlowNet2S, self).forward(x)
-
+        return flows # modified by me
         if self.training:
             return flows
         else:
             return self.upsample1(flows[0] * self.div_flow)
 
 
-class FlowNet2SD(FlowNetSD):
+# class FlowNet2SD(FlowNetSD):
 
-    def __init__(self, with_bn=False, rgb_max=255., div_flow=20):
-        super(FlowNet2SD, self).__init__(with_bn=with_bn)
-        self.rgb_max = rgb_max
-        self.div_flow = div_flow
+#     def __init__(self, with_bn=False, rgb_max=255., div_flow=20):
+#         super(FlowNet2SD, self).__init__(with_bn=with_bn)
+#         self.rgb_max = rgb_max
+#         self.div_flow = div_flow
 
-    def forward(self, inputs):
-        rgb_mean = inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(
-            dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
-        x = (inputs - rgb_mean) / self.rgb_max
-        x = torch.cat((x[:, :, 0, :, :], x[:, :, 1, :, :]), dim=1)
+#     def forward(self, inputs):
+#         rgb_mean = inputs.contiguous().view(inputs.size()[:2] + (-1, )).mean(
+#             dim=-1).view(inputs.size()[:2] + (1, 1, 1, ))
+#         x = (inputs - rgb_mean) / self.rgb_max
+#         x = torch.cat((x[:, :, 0, :, :], x[:, :, 1, :, :]), dim=1)
 
-        flows = super(FlowNet2SD, self).forward(x)
+#         flows = super(FlowNet2SD, self).forward(x)
 
-        if self.training:
-            return flows
-        else:
-            return self.upsample1(flows[0] * self.div_flow)
+#         if self.training:
+#             return flows
+#         else:
+#             return self.upsample1(flows[0] * self.div_flow)
 
 
 class FlowNet2CS(nn.Module):

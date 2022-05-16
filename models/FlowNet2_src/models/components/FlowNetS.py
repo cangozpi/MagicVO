@@ -91,8 +91,9 @@ class FlowNetS(nn.Module):
 
         concat2 = torch.cat((out_conv2, out_deconv2, flow3_up), 1)
         flow2 = self.predict_flow2(concat2)
-
+        return out_conv6 # modified by me
         if self.training:
             return flow2, flow3, flow4, flow5, flow6
         else:
             return flow2,
+            

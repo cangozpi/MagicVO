@@ -1,6 +1,6 @@
 from data import VisualOdometryDataset
 import torch
-# from models.FlowNet2_src import FlowNet2S
+from models.FlowNet2_src import FlowNet2S
 from models.MagicVO_src.MagicVO_model import MagicVO_Model
 from models.CNN_Backbone_src.CNN_Backbone_model import CNN_backbone_model
 from utils.train import train_with_flownet, train_with_cnn_backbone
