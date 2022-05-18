@@ -27,11 +27,14 @@ def test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, f
 
 
     # ======== Use GPU if available
-    device = "gpu" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     flownet2_model = flownet2_model.to(device)
     magicVO_model = magicVO_model.to(device)
 
-
+    if device != "cpu":
+        print('=' * 30)
+        print('Found device:', torch.cuda.get_device_name(0))
+        print('=' * 30)
 
     print('=' * 30)
     print('Testing MagicVO model')
@@ -69,7 +72,7 @@ def test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, f
         
         
         # ========== Process predictions
-        for pred in preds.numpy(): # iterate through the predictions
+        for pred in preds.detach().cpu().numpy(): # iterate through the predictions
             R = eulerAnglesToRotationMatrix(pred[3:])
             t = pred[:3].reshape(3, 1)
             T_r = np.concatenate((np.concatenate([R, t], axis=1), [[0.0, 0.0, 0.0, 1.0]]), axis=0)
@@ -85,7 +88,7 @@ def test_with_flownet_backbone(flownet2_model, magicVO_model, test_dataloader, f
 
         
         # ========== Process Ground Truth (gt)
-        for gt in odometry.numpy():
+        for gt in odometry.detach().cpu().numpy():
             R = eulerAnglesToRotationMatrix(gt[3:])
             t = gt[:3].reshape(3, 1)
             gtT_r = np.concatenate((np.concatenate([R, t], axis=1), [[0.0, 0.0, 0.0, 1.0]]), axis=0)
@@ -139,11 +142,14 @@ def test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, c
 
 
     # ======== Use GPU if available
-    device = "gpu" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     cnn_backbone_model = cnn_backbone_model.to(device)
     magicVO_model = magicVO_model.to(device)
 
-
+    if device != "cpu":
+        print('=' * 30)
+        print('Found device:', torch.cuda.get_device_name(0))
+        print('=' * 30)
 
     print('=' * 30)
     print('Testing MagicVO model')
@@ -178,7 +184,7 @@ def test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, c
         
         
         # ========== Process predictions
-        for pred in preds.numpy(): # iterate through the predictions
+        for pred in preds.detach().cpu().numpy(): # iterate through the predictions
             R = eulerAnglesToRotationMatrix(pred[3:])
             t = pred[:3].reshape(3, 1)
             T_r = np.concatenate((np.concatenate([R, t], axis=1), [[0.0, 0.0, 0.0, 1.0]]), axis=0)
@@ -194,7 +200,7 @@ def test_with_cnn_backbone(cnn_backbone_model, magicVO_model, test_dataloader, c
 
         
         # ========== Process Ground Truth (gt)
-        for gt in odometry.numpy():
+        for gt in odometry.detach().cpu().numpy():
             R = eulerAnglesToRotationMatrix(gt[3:])
             t = gt[:3].reshape(3, 1)
             gtT_r = np.concatenate((np.concatenate([R, t], axis=1), [[0.0, 0.0, 0.0, 1.0]]), axis=0)

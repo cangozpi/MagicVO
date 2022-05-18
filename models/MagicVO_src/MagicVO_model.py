@@ -4,7 +4,7 @@ from torch import nn
 class MagicVO_Model(nn.Module):
     def __init__(self):
         super().__init__()
-        self.device = "gpu" if torch.cuda.is_available() else "cpu"
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         # Recurrent Neural Netwok:
         self.hidden_size = 1000
         self.num_layers = 2

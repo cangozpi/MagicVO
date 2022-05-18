@@ -4,7 +4,7 @@ from torch import nn
 class CNN_backbone_model(nn.Module):
     def __init__(self):
         super().__init__()
-        self.device = "gpu" if torch.cuda.is_available() else "cpu"
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model = torch.nn.Sequential(
             torch.nn.Conv2d(6, 64, 7, 2, padding=3),
             torch.nn.LeakyReLU(0.1),

@@ -47,12 +47,15 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
 
 
     # ======== Use GPU if available
-    device = "gpu" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     flownet_model = flownet_model.to(device)
     magicVO_model = magicVO_model.to(device)
 
-
-
+    if device != "cpu":
+        print('=' * 30)
+        print('Found device:', torch.cuda.get_device_name(0))
+        print('=' * 30)
+    
     print('=' * 30)
     print('Training MagicVO model')
     print('=' * 30)
@@ -189,11 +192,14 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
 
 
     # ======== Use GPU if available
-    device = "gpu" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     cnn_backbone_model = cnn_backbone_model.to(device)
     magicVO_model = magicVO_model.to(device)
 
-
+    if device != "cpu":
+        print('=' * 30)
+        print('Found device:', torch.cuda.get_device_name(0))
+        print('=' * 30)
 
     print('=' * 30)
     print('Training MagicVO model')
