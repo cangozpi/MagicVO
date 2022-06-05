@@ -139,6 +139,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
 
         # ======== Save Checkpoints
         if (best_val_loss == None) or (best_val_loss >= avg_val_loss):
+            best_val_loss = avg_val_loss
             # Save flownet
             torch.save({
                 'epoch': i,
@@ -264,6 +265,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
 
         # ======== Save Checkpoints
         if (best_val_loss == None) or (best_val_loss >= avg_val_loss):
+            best_val_loss = avg_val_loss
             # Save cnn_backbone
             torch.save({
                 'epoch': i+loaded_epoch,
