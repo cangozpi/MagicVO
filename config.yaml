@@ -11,6 +11,7 @@ batch_size: 2
 epochs: 5
 lr: 0.001
 k: 1 # k value in "combined_loss = mse_position_loss + (k * mse_orientation_loss)"     #TODO check its value from the paper
+gradient_clip_norm: 1
 flownet_or_CNN_backbone: True # if True use flownet, if not use CNN_backbone
 use_pretrained_flownet: True # Whether to use a pretrained flownet model laoded from Caffee converted ckpts
 flownet_path: './models/checkpoints/FlowNet2-S_checkpoint.pth.tar' # file path of the pre-trained caffee ckpt for flownet

@@ -32,7 +32,7 @@ def train_mode():
         # Train the model
         train_with_flownet(flownet2_model, magicVO_model, train_dataloader, val_dataloader, config["epochs"], config["lr"], config["k"], \
             config["flownet_ckpt_path"], config["magicVO_ckpt_path"], train_flownet=config["train_flownet"], \
-                load_flownet_ckpt=config["load_flownet_ckpt"], load_magicVO_ckpt=config["load_magicVO_ckpt"])
+                load_flownet_ckpt=config["load_flownet_ckpt"], load_magicVO_ckpt=config["load_magicVO_ckpt"], gradient_clip_norm=config["gradient_clip_norm"])
     else: # Use CNN_Backbone as the feature extractor
         # Initialize CNN_Backbone_model 
         cnn_backbone_model = CNN_backbone_model()
@@ -42,7 +42,7 @@ def train_mode():
         # Train the model
         train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader, val_dataloader, config["epochs"], config["lr"], config["k"], \
             config["cnn_backbone_ckpt_path"], config["magicVO_ckpt_path"], load_cnn_backone_ckpt=config["load_cnn_backone_ckpt"], \
-                load_magicVO_ckpt=config["load_magicVO_ckpt"])
+                load_magicVO_ckpt=config["load_magicVO_ckpt"], gradient_clip_norm=config["gradient_clip_norm"])
 
 def test_mode():
     # Initialize DataLoaders

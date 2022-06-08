@@ -19,7 +19,7 @@ def plot_results(train_losses, val_losses):
     plt.show()
 
 def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_dataloader, epochs, lr, k, flownet_ckpt_path, magicVO_ckpt_path,\
-     train_flownet=False, load_flownet_ckpt=False, load_magicVO_ckpt=False):
+     train_flownet=False, load_flownet_ckpt=False, load_magicVO_ckpt=False, gradient_clip_norm=1):
     optim_flownet = torch.optim.Adagrad(flownet_model.parameters(), lr)
     optim_magicVO = torch.optim.Adagrad(magicVO_model.parameters(), lr)
 
@@ -89,6 +89,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 
                 # Backpropagate the gradients
                 train_loss.backward()
+                torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
                 optim_magicVO.step()
 
             else: # FlowNet model is trainable
@@ -100,6 +101,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
 
                 # Backpropagate the gradients
                 train_loss.backward()
+                torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
                 optim_flownet.step()
                 optim_magicVO.step()
 
@@ -165,7 +167,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
 
 
 def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader, val_dataloader, epochs, lr, k, cnn_backbone_ckpt_path, magicVO_ckpt_path,\
-            load_cnn_backone_ckpt=False, load_magicVO_ckpt=False):
+            load_cnn_backone_ckpt=False, load_magicVO_ckpt=False, gradient_clip_norm=1) :
     optim_cnn_backbone = torch.optim.Adagrad(cnn_backbone_model.parameters(), lr)
     optim_magicVO = torch.optim.Adagrad(magicVO_model.parameters(), lr)
 
@@ -229,6 +231,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
 
             # Backpropagate the gradients
             train_loss.backward()
+            torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
             optim_cnn_backbone.step()
             optim_magicVO.step()
 
