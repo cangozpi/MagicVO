@@ -1,5 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
+from torch.utils.tensorboard import SummaryWriter
+import datetime
 
 def plot_results(train_losses, val_losses):
     plt.figure()
@@ -20,6 +22,10 @@ def plot_results(train_losses, val_losses):
 
 def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_dataloader, epochs, lr, k, flownet_ckpt_path, magicVO_ckpt_path,\
      train_flownet=False, load_flownet_ckpt=False, load_magicVO_ckpt=False, gradient_clip_norm=1):
+    # Tensorboard
+    log_dir, run_name = "results/", "train_with_flownet_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_file_writer = SummaryWriter(log_dir+run_name)
+    
     optim_flownet = torch.optim.Adagrad(flownet_model.parameters(), lr)
     optim_magicVO = torch.optim.Adagrad(magicVO_model.parameters(), lr)
 
@@ -90,6 +96,12 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 # Backpropagate the gradients
                 train_loss.backward()
                 torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
+                
+                # log weights and gradients to tb
+                for name, param in magicVO_model.named_parameters():
+                    tb_file_writer.add_histogram(name+".weight", param, i)
+                    tb_file_writer.add_histogram(name+".grad", param.grad, i)
+                
                 optim_magicVO.step()
 
             else: # FlowNet model is trainable
@@ -102,6 +114,12 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 # Backpropagate the gradients
                 train_loss.backward()
                 torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
+
+                # log weights and gradients to tb
+                for name, param in magicVO_model.named_parameters():
+                    tb_file_writer.add_histogram(name+".weight", param, i)
+                    tb_file_writer.add_histogram(name+".grad", param.grad, i)
+                
                 optim_flownet.step()
                 optim_magicVO.step()
 
@@ -112,6 +130,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
         # Record the training loss
         avg_train_loss = cum_train_loss / len(train_dataloader.dataset)
         train_losses.append(avg_train_loss)
+        tb_file_writer.add_scalar("Training Loss", avg_train_loss, i)
 
         
         # ======== Validate
@@ -137,7 +156,7 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
         # Record the validation loss
         avg_val_loss = cum_val_loss / len(val_dataloader.dataset)
         val_losses.append(avg_val_loss)
-
+        tb_file_writer.add_scalar("Validation Loss", avg_val_loss, i)
 
         # ======== Save Checkpoints
         if (best_val_loss == None) or (best_val_loss >= avg_val_loss):
@@ -170,6 +189,9 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
             load_cnn_backone_ckpt=False, load_magicVO_ckpt=False, gradient_clip_norm=1) :
     optim_cnn_backbone = torch.optim.Adagrad(cnn_backbone_model.parameters(), lr)
     optim_magicVO = torch.optim.Adagrad(magicVO_model.parameters(), lr)
+
+    log_dir, run_name = "results/", "train_with_flownet_"+datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tb_file_writer = SummaryWriter(log_dir+run_name)
 
     # ======== Load models from ckpts
     loaded_epoch = 0
@@ -232,6 +254,12 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
             # Backpropagate the gradients
             train_loss.backward()
             torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
+
+            # log weights and gradients to tb
+            for name, param in magicVO_model.named_parameters():
+                tb_file_writer.add_histogram(name+".weight", param, i)
+                tb_file_writer.add_histogram(name+".grad", param.grad, i)
+
             optim_cnn_backbone.step()
             optim_magicVO.step()
 
@@ -242,6 +270,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
         # Record the training loss
         avg_train_loss = cum_train_loss / len(train_dataloader.dataset)
         train_losses.append(avg_train_loss)
+        tb_file_writer.add_scalar("Training Loss", avg_train_loss, i)
 
         
         # ======== Validate
@@ -264,7 +293,7 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
         # Record the validation loss
         avg_val_loss = cum_val_loss / len(val_dataloader.dataset)
         val_losses.append(avg_val_loss)
-
+        tb_file_writer.add_scalar("Validation Loss", avg_val_loss, i)
 
         # ======== Save Checkpoints
         if (best_val_loss == None) or (best_val_loss >= avg_val_loss):
