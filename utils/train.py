@@ -97,11 +97,6 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 train_loss.backward()
                 torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
                 
-                # log weights and gradients to tb
-                for name, param in magicVO_model.named_parameters():
-                    tb_file_writer.add_histogram(name+".weight", param, i)
-                    tb_file_writer.add_histogram(name+".grad", param.grad, i)
-                
                 optim_magicVO.step()
 
             else: # FlowNet model is trainable
@@ -114,11 +109,6 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
                 # Backpropagate the gradients
                 train_loss.backward()
                 torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
-
-                # log weights and gradients to tb
-                for name, param in magicVO_model.named_parameters():
-                    tb_file_writer.add_histogram(name+".weight", param, i)
-                    tb_file_writer.add_histogram(name+".grad", param.grad, i)
                 
                 optim_flownet.step()
                 optim_magicVO.step()
@@ -132,7 +122,11 @@ def train_with_flownet(flownet_model, magicVO_model, train_dataloader, val_datal
         train_losses.append(avg_train_loss)
         tb_file_writer.add_scalar("Training Loss", avg_train_loss, i)
 
-        
+        # log weights and gradients to tb
+        for name, param in magicVO_model.named_parameters():
+            tb_file_writer.add_histogram(name+".weight", param, i)
+            tb_file_writer.add_histogram(name+".grad", param.grad, i)
+
         # ======== Validate
         flownet_model.eval()
         magicVO_model.eval()
@@ -255,11 +249,6 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
             train_loss.backward()
             torch.nn.utils.clip_grad_norm_(magicVO_model.parameters(), gradient_clip_norm)
 
-            # log weights and gradients to tb
-            for name, param in magicVO_model.named_parameters():
-                tb_file_writer.add_histogram(name+".weight", param, i)
-                tb_file_writer.add_histogram(name+".grad", param.grad, i)
-
             optim_cnn_backbone.step()
             optim_magicVO.step()
 
@@ -272,7 +261,12 @@ def train_with_cnn_backbone(cnn_backbone_model, magicVO_model, train_dataloader,
         train_losses.append(avg_train_loss)
         tb_file_writer.add_scalar("Training Loss", avg_train_loss, i)
 
-        
+        # log weights and gradients to tb
+        for name, param in magicVO_model.named_parameters():
+            tb_file_writer.add_histogram(name+".weight", param, i)
+            tb_file_writer.add_histogram(name+".grad", param.grad, i)
+
+
         # ======== Validate
         cnn_backbone_model.eval()
         magicVO_model.eval()
